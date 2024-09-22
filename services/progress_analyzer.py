@@ -1,7 +1,8 @@
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+from datetime import datetime
 import io
-from datetime import datetime, timedelta
+
+import plotly.graph_objects as go
+
 
 def analyze_weight_progress(weight_history, lang, messages):
     if not weight_history:
@@ -10,48 +11,43 @@ def analyze_weight_progress(weight_history, lang, messages):
     dates = [entry.date for entry in weight_history]
     weights = [entry.weight for entry in weight_history]
 
-    # Create figure with secondary y-axis
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # Создаем график
+    fig = go.Figure()
 
-    # Add traces
+    # Добавляем линию веса
     fig.add_trace(
-        go.Scatter(x=dates, y=weights, name="Weight", line=dict(color="#FF9900", width=4)),
-        secondary_y=False,
+        go.Scatter(x=dates, y=weights, name="Weight", line=dict(color="#FF9900", width=4), mode='lines+markers',
+                   marker=dict(size=8, color='#0066CC', symbol='circle'))
     )
 
-    # Set x-axis title
-    fig.update_xaxes(title_text=messages[lang]['date_label'])
+    # Настройка осей
+    fig.update_xaxes(
+        title_text=messages[lang]['date_label'],
+        tickangle=45,
+        tickformat='%Y-%m-%d',
+        dtick='M1'
+    )
+    fig.update_yaxes(title_text=messages[lang]['weight_label'])
 
-    # Set y-axes titles
-    fig.update_yaxes(title_text=messages[lang]['weight_label'], secondary_y=False)
-
-    # Customize the layout
+    # Настраиваем оформление
     fig.update_layout(
         title=messages[lang]['weight_chart_title'],
         font=dict(family="Arial", size=14),
-        plot_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',  # прозрачный фон
         hovermode="x unified",
         height=600,
         width=1000,
+        margin=dict(l=50, r=50, t=50, b=100)  # Увеличиваем нижний отступ
     )
 
-    # Remove gridlines
+    # Отключаем линии сетки
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
 
-    # Add range slider
+    # Убираем слайдер времени и настраиваем формат даты
     fig.update_layout(
         xaxis=dict(
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=1, label="1m", step="month", stepmode="backward"),
-                    dict(count=6, label="6m", step="month", stepmode="backward"),
-                    dict(count=1, label="YTD", step="year", stepmode="todate"),
-                    dict(count=1, label="1y", step="year", stepmode="backward"),
-                    dict(step="all")
-                ])
-            ),
-            rangeslider=dict(visible=True),
+            rangeslider=dict(visible=False),
             type="date"
         )
     )
