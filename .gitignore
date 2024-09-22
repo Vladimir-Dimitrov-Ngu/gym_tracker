@@ -88,9 +88,6 @@ user_data/
 workout_logs/
 progress_charts/
 
-# Dependency management
-requirements.txt
-
 # Environment variables
 .env.local
 .env.development
