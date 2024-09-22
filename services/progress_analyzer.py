@@ -24,8 +24,9 @@ def analyze_weight_progress(weight_history, lang, messages):
     fig.update_xaxes(
         title_text=messages[lang]['date_label'],
         tickangle=45,
-        tickformat='%Y-%m-%d',
-        dtick='M1'
+        tickformat='%d-%m-%Y',
+        tickmode='array',
+        tickvals=dates
     )
     fig.update_yaxes(title_text=messages[lang]['weight_label'])
 

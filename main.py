@@ -1,21 +1,20 @@
 import logging
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler
-from bot.handlers import start, help, language_callback
+from telegram.ext import Application
+from bot.handlers import setup_handlers
 from config import TOKEN
-
+from utils.helpers import add_initial_equipment
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
+
 def main():
+    logging.info("Starting bot")
+    add_initial_equipment()
     application = Application.builder().token(TOKEN).build()
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help))
-    application.add_handler(CallbackQueryHandler(language_callback, pattern='^lang_'))
-
+    setup_handlers(application)
     application.run_polling()
 
 if __name__ == '__main__':

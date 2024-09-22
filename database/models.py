@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Float, DateTime
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Float, DateTime, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime, timezone
@@ -30,17 +30,18 @@ class Workout(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.user_id'))
-    date = Column(Date)
-    exercise_name = Column(String)
-
-    user = relationship("User", back_populates="workouts")
-    sets = relationship("WorkoutSet", back_populates="workout")
-
-class WorkoutSet(Base):
-    __tablename__ = 'workout_sets'
-
-    id = Column(Integer, primary_key=True)
-    workout_id = Column(Integer, ForeignKey('workouts.id'))
+    date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    muscle_group = Column(String)
+    equipment = Column(String)
+    sets = Column(Integer)
     reps = Column(Integer)
 
-    workout = relationship("Workout", back_populates="sets")
+    user = relationship("User", back_populates="workouts")
+
+class Equipment(Base):
+    __tablename__ = 'equipment'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True)
+    muscle_group = Column(String)
+    description = Column(Text)
